@@ -1,7 +1,7 @@
 const socket = io("http://localhost:3000");
 let name = "no-name#" + Math.floor(Math.random() * 100);
 let gameInProgress = false;
-let timeLeft = 30;
+let timeLeft = 90;
 let timerInterval;
 let currentClue = "";
 let modalMode = "name";
@@ -31,7 +31,7 @@ function showNextRoundModal() {
   clearCanvas();
   modalMode = "next-round";
   modalTitle.textContent = "Next Round";
-  modalBody.innerHTML = `<p>Time’s up! Ready for the next round?</p>`;
+  modalBody.innerHTML = `<p>Ready for the next round?</p>`;
   modalActionBtn.textContent = "Next Round";
   gameModal.show();
 }
@@ -194,6 +194,7 @@ socket.on("new-drawer", ({ drawerId, drawerName }) => {
 });
 
 socket.on("new-clue", (clue) => {
+  if (canDraw) return;
   currentClue = clue;
   wordDisplay.textContent = `Word to guess: ${clue}`;
 });
@@ -235,9 +236,13 @@ socket.on("waiting-for-players", ({ readyCount, totalPlayers }) => {
   );
 });
 
-socket.on("new-round", ({ clue, timeLeft: newTime }) => {
+socket.on("new-round", ({ clue, timeLeft: newTime, word }) => {
   currentClue = clue;
-  wordDisplay.textContent = `Word to guess: ${clue}`;
+  if (!canDraw) {
+    wordDisplay.textContent = `Word to guess: ${clue}`;
+  } else {
+    wordDisplay.textContent = `Word to draw: ${word}`;
+  }
   timeLeft = newTime;
   if (timerInterval) clearInterval(timerInterval);
   timerInterval = setInterval(updateTimer, 1000);

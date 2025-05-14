@@ -37,6 +37,74 @@ const words = [
   "volcano",
   "octopus",
   "basketball",
+  "apple",
+  "ball",
+  "cat",
+  "dog",
+  "egg",
+  "fish",
+  "grape",
+  "hat",
+  "ice",
+  "juice",
+  "kite",
+  "leaf",
+  "moon",
+  "nose",
+  "owl",
+  "pen",
+  "queen",
+  "rain",
+  "banana",
+  "guitar",
+  "rocket",
+  "flower",
+  "castle",
+  "window",
+  "button",
+  "animal",
+  "camera",
+  "ladder",
+  "gloves",
+  "clouds",
+  "donuts",
+  "pencil",
+  "basket",
+  "bridge",
+  "cookie",
+  "doctor",
+  "pirate",
+  "tunnel",
+  "jungle",
+  "bottle",
+  "planet",
+  "carrot",
+  "beach",
+  "violin",
+  "garage",
+  "rabbit",
+  "trophy",
+  "pillow",
+  "ticket",
+  "circus",
+  "mirror",
+  "laptop",
+  "butter",
+  "subway",
+  "garden",
+  "pickup",
+  "rocket",
+  "saddle",
+  "shovel",
+  "napkin",
+  "hanger",
+  "magnet",
+  "breeze",
+  "helmet",
+  "puzzle",
+  "candle",
+  "donkey",
+  "hammer",
 ];
 
 // Game state
@@ -84,6 +152,9 @@ function startNewRound() {
   GameState.currentDrawerId =
     GameState.players[Math.floor(Math.random() * GameState.players.length)];
 
+  // add the drawer to correctGuesser
+  GameState.correctGuessers.add(GameState.currentDrawerId);
+
   console.log("Starting round with word:", GameState.currentWord);
 
   // Notify all clients who is the drawer
@@ -92,7 +163,11 @@ function startNewRound() {
     drawerId: GameState.currentDrawerId,
     drawerName: drawerPlayer.name,
   });
-  io.emit("new-round", { clue: GameState.currentClue, timeLeft: 30 });
+  io.emit("new-round", {
+    clue: GameState.currentClue,
+    timeLeft: 90,
+    word: GameState.currentWord,
+  });
 }
 
 // Score update logic
@@ -171,7 +246,7 @@ function handlePlayerReadyNext(socket) {
 
 // Timer clue updates
 function handleTimerUpdate(timeLeft) {
-  const clueIntervals = [20, 10, 5];
+  const clueIntervals = [40, 25, 10];
   const clueIndex = clueIntervals.indexOf(timeLeft);
 
   if (clueIndex !== -1 && GameState.cluesGiven === clueIndex) {
