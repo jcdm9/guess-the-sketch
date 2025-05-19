@@ -48,7 +48,7 @@ modalActionBtn.addEventListener("click", () => {
     }
   } else if (modalMode === "next-round") {
     gameModal.hide();
-    socket.emit("player-ready-next");
+    socket.emit("player-ready-next", name);
   }
 });
 
@@ -159,6 +159,7 @@ chatForm.addEventListener("submit", (e) => {
   const msg = chatInput.value.trim();
   if (!msg) return;
   chatInput.value = "";
+  console.log("isGameInProg: ", gameInProgress);
   if (gameInProgress) {
     socket.emit("guess", msg);
   } else {
@@ -179,18 +180,6 @@ socket.on("connect", () => {
   socket.on("received-message", ({ user, message }) =>
     addMessage(message, user)
   );
-});
-
-socket.on("new-drawer", ({ drawerId, drawerName }) => {
-  canDraw = socket.id === drawerId;
-
-  if (canDraw) {
-    toolbar.style.display = "block";
-    addMessage(`It's your turn to draw!`);
-  } else {
-    toolbar.style.display = "none";
-    addMessage(`${drawerName} is drawing...`);
-  }
 });
 
 socket.on("new-clue", (clue) => {
@@ -236,17 +225,29 @@ socket.on("waiting-for-players", ({ readyCount, totalPlayers }) => {
   );
 });
 
-socket.on("new-round", ({ clue, timeLeft: newTime, word }) => {
-  currentClue = clue;
-  if (!canDraw) {
-    wordDisplay.textContent = `Word to guess: ${clue}`;
-  } else {
-    wordDisplay.textContent = `Word to draw: ${word}`;
+socket.on(
+  "new-round",
+  ({ clue, timeLeft: newTime, word, drawerId, drawerName }) => {
+    gameInProgress = true;
+    currentClue = clue;
+    canDraw = socket.id === drawerId;
+    console.log(drawerId, canDraw);
+    if (!canDraw) {
+      toolbar.style.display = "none";
+      addMessage(`${drawerName} is drawing...`);
+      wordDisplay.textContent = `Word to guess: ${clue}`;
+    } else {
+      toolbar.style.display = "block";
+      addMessage(`It's your turn to draw!`);
+      wordDisplay.textContent = `Word to draw: ${word}`;
+    }
+
+    timeLeft = newTime;
+    if (timerInterval) clearInterval(timerInterval);
+    timerInterval = setInterval(updateTimer, 1000);
+    clearCanvas();
   }
-  timeLeft = newTime;
-  if (timerInterval) clearInterval(timerInterval);
-  timerInterval = setInterval(updateTimer, 1000);
-});
+);
 
 socket.on("draw", ({ fromX, fromY, toX, toY, color, size }) => {
   drawLine(fromX, fromY, toX, toY, color, size);

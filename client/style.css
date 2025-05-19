@@ -9,11 +9,15 @@
   padding: 0;
 }
 
+#utils {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
 .chat-box {
   height: calc(100vh - 100px);
   overflow-y: auto;
   background-color: #f8f9fa;
-  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
 .message {
@@ -49,7 +53,7 @@
   background: white;
   padding: 10px;
   border-radius: 5px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   z-index: 10;
 }
 .toolbar input[type="color"],
@@ -72,7 +76,7 @@
 }
 
 .guess-form .input-group {
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .guess-form input {
@@ -89,7 +93,7 @@
   padding: 15px;
   background-color: #f8f9fa;
   border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .score-item {
@@ -99,7 +103,7 @@
   padding: 8px;
   background-color: white;
   border-radius: 4px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .score-item:last-child {
@@ -131,6 +135,6 @@
   color: #c0c0c0; /* Silver for #2 */
 }
 
-.score-item:nth-child(n+3) .player-title {
+.score-item:nth-child(n + 3) .player-title {
   color: #cd7f32; /* Bronze for others */
 }
